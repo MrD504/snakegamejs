@@ -16,8 +16,8 @@ window.onload = function() {
   let foodLocation = new CoordConstructor(); //position of food "F" in the matrix
   let grid = [];
 
-  let y = display(); //once two dimensional array is created it is converted to table
-  document.getElementById("container1").appendChild(y); //y is table that is attached to container1 div element
+  let table = display(); //once two dimensional array is created it is converted to table
+  document.getElementById("container1").appendChild(table); //y is table that is attached to container1 div element
   document.addEventListener("keydown", keyPressed); //added eventlistener
 
   function CoordConstructor() {
@@ -56,29 +56,34 @@ window.onload = function() {
     newGame();
   };
 
-  function newGame() {
-    resetSnake(); // initialise snake
-    foodposition(); //this random position of food is generated with this method
-    createBoard();
+  function hideDivs() {
     startDiv.style.display = "none"; // hide startdiv on game start
     endDiv.style.display = "none"; // hide enddiv on game start
-    container = new CoordConstructor();
-    X = 0;
-    Y = 0;
-    count = 0;
-    foodcounter.innerHTML = count;
+  }
+
+  function newGame() {
+    hideDivs();
+    resetSnake(); // initialise snake
+    foodposition(); //this random position of food is generated with this method
+    resetBoard();
 
     foodposition(); //this random position of food is generated with this method
     grid[container.x][container.y] = snake.body[0]; //position of snake head
     grid[foodLocation.x][foodLocation.y] = "F"; //position of food F
-    console.log(grid);
 
-    let t = display();
-    let firstchild1 = document.getElementById("container1").firstChild;
-    container1.replaceChild(t, firstchild1);
+    redrawTable();
 
     /* Do not start timer until player is ready to play */
     startTimer();
+
+    /* dirty hack. make snake move right on start */
+    keyPressed({ key: "ArrowRight" });
+  }
+
+  function redrawTable() {
+    let table = display();
+    let firstchild1 = container1.firstChild;
+    container1.replaceChild(table, firstchild1);
   }
 
   function startTimer() {
@@ -164,9 +169,7 @@ window.onload = function() {
     return table;
   }
 
-  function game() {
-    //setInterval
-
+  function overlapIfSnakeOutOfBounds() {
     if (container.y === Rows) {
       //when snake reaches end of the table to comes from the other side
       container.y = 0;
@@ -184,84 +187,93 @@ window.onload = function() {
       //when snake reaches end of the table to comes from the other side
       container.x = Rows - 1;
     }
+  }
 
-    if (snake.length >= 1) {
-      //when body part is added this executes
+  function setContainerPosition() {
+    container.x += X;
+    container.y += Y;
+  }
 
-      let previousX = container.x;
-      let previousY = container.y;
-
-      container.x += X;
-      container.y += Y;
-
-      //to check if head touches the snake body part - game over
-      for (let checkvalue = 0; checkvalue < snake.length; checkvalue++) {
-        if (
-          container.x == snake.position[checkvalue].x &&
-          container.y == snake.position[checkvalue].y
-        ) {
-          endDiv.style.display = "block";
-          stopTimer();
-          return;
-        }
-      }
-
-      if (foodEaten === true) {
-        formgrid("", 20, 20);
-        grid[container.x][container.y] = snake.body[0];
-        grid[foodLocation.x][foodLocation.y] = "F";
-        for (let prev = 0; prev < snake.length; prev++) {
-          grid[snake.position[prev].x][snake.position[prev].y] = "o";
-        }
-
-        let t = display();
-        let firstchild1 = container1.firstChild;
-        container1.replaceChild(t, firstchild1);
-        foodEaten = false;
+  function ifSnakeCrashedEndGame() {
+    for (let checkvalue = 0; checkvalue < snake.length; checkvalue++) {
+      if (
+        container.x == snake.position[checkvalue].x &&
+        container.y == snake.position[checkvalue].y
+      ) {
+        endDiv.style.display = "block";
+        stopTimer();
         return;
       }
+    }
+  }
 
-      //here movement of head and body gets updated
-      formgrid("", Rows, Columns);
-      console.log("grid", grid);
+  function handleLongSnake() {
+    let previousX = container.x;
+    let previousY = container.y;
+
+    setContainerPosition();
+    //check if head touches the snake body part - game over
+    ifSnakeCrashedEndGame();
+
+    if (foodEaten === true) {
+      formgrid("", 20, 20);
       grid[container.x][container.y] = snake.body[0];
       grid[foodLocation.x][foodLocation.y] = "F";
-
       for (let prev = 0; prev < snake.length; prev++) {
-        // grid[position[prev].x][position[prev].y] = "o";
-        let tempx = snake.position[prev].x; //next position for next index element
-        let tempy = snake.position[prev].y;
-        //grid[position[prev].x][position[prev].y] = "o";
-        snake.position[prev].x = previousX; //next position for first index element
-        snake.position[prev].y = previousY;
         grid[snake.position[prev].x][snake.position[prev].y] = "o";
-        previousX = tempx;
-        previousY = tempy;
       }
 
-      let t = display();
-      let firstchild1 = container1.firstChild;
-      container1.replaceChild(t, firstchild1);
-    } else {
-      container.x += X;
-      container.y += Y;
-      console.log("I am working");
-      console.log("snake y", container.y);
-      formgrid("", Rows, Columns); //only when head part is there
-
-      //formgrid means form two dimensional array with 20 Rows and 20 Columns and fill the cell with ""
-      grid[container.x][container.y] = snake.body[0];
-      grid[foodLocation.x][foodLocation.y] = "F";
-      let t = display(); //new position of player
-      let firstchild1 = container1.firstChild; //previous position of player
-      container1.replaceChild(t, firstchild1); //previous position replaced with new - ok
+      redrawTable();
+      foodEaten = false;
+      return;
     }
 
+    //here movement of head and body gets updated
+    setHeadAndFoodPosition();
+
+    // draw snake trail to follow path of head
+    for (let prev = 0; prev < snake.length; prev++) {
+      const tempx = snake.position[prev].x; //next position for next index element
+      const tempy = snake.position[prev].y;
+      snake.position[prev].x = previousX; //next position for first index element
+      snake.position[prev].y = previousY;
+      grid[snake.position[prev].x][snake.position[prev].y] = "o";
+      previousX = tempx;
+      previousY = tempy;
+    }
+
+    redrawTable();
+  }
+
+  function setHeadAndFoodPosition() {
+    // TODO: throws error when snake head overlaps edge of grid. Vertical only.
+    formgrid("", Rows, Columns); //only when head part is there
+    grid[container.x][container.y] = snake.body[0];
+    grid[foodLocation.x][foodLocation.y] = "F";
+  }
+
+  /* main logic. Break in to simple functions to carry separate tasks.
+    Try to keep things easy to follow */
+  function game() {
+    overlapIfSnakeOutOfBounds();
+
+    if (snake.length >= 1) {
+      handleLongSnake();
+    } else {
+      setContainerPosition();
+      setHeadAndFoodPosition();
+      redrawTable();
+    }
+
+    eatFood();
+  }
+
+  function eatFood() {
     if (container.x === foodLocation.x && container.y === foodLocation.y) {
       let nextx = container.x; //food position and snake head position same
       let nexty = container.y; //food position and snake head position same
 
-      count = count + 1;
+      count++;
 
       foodcounter.innerHTML = count;
 
@@ -273,13 +285,8 @@ window.onload = function() {
       snake.length++; //increase the length by one
 
       snake.position.unshift({ x: nextx, y: nexty }); //saved food position is moved to first position of position array
-
-      console.log("position", snake.position);
-      console.log("palyer", snake.body);
-      console.log("grid after loop", grid);
     }
   }
-
   function keyPressed(evt) {
     switch (evt.key) {
       case "ArrowRight":
@@ -323,10 +330,16 @@ window.onload = function() {
   }
 
   //this is the first step creating board and snake and food F
-  function createBoard() {
+  function resetBoard() {
     //this creating two dimensional array with 20 Rows and 20 Columns filling with blank
     formgrid("", Rows, Columns);
     grid[container.x][container.y] = snake.body[0]; //position of snake head
     grid[foodLocation.x][foodLocation.y] = "F"; //position of food F
+
+    container = new CoordConstructor();
+    X = 0;
+    Y = 0;
+    count = 0;
+    foodcounter.innerHTML = count;
   }
 };
