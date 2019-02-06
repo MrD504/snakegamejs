@@ -1,41 +1,31 @@
+<!DOCTYPE html>
 <html>
+  <head>
+    <title>simple snake game</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
 
-    <head>
-        <title>simple snake game</title>
-        <script type="text/javascript" src="script.js"></script>
-        <link rel="stylesheet" href="styles.css">
-    </head>
+  <body>
+    <div id="parent">
+      <div id="container1"></div>
 
-    <body>
-
-
-        <div id="parent">
-
-            <div id="container1"></div>
-
-            <div id="startGame">
-                <h2>Snake</h2>
-                <a id="newgame">new game</a>
-            </div>
-
-            <div id="endGame">
-                <h2>End Game</h2>
-                <a id="newgamestart">new game</a>
-            </div>
-
-            <div id="score">
-                <span style="margin-left: -17px">score</span>
-                <h2 style="margin: auto; font-size: 30px; margin-left: -12px; margin-top: 0px" id="foodcount">0</h2>
-            </div>
-
-            <div id="para">
-
-            </div>
-
-
-        </div>
-
-
-    </body>
-
+      <div id="startGame">
+        <h2>Snake</h2>
+        <a id="newgame">new game</a>
+      </div>
+      <div id="endGame">
+        <h2>End Game</h2>
+        <a id="newgamestart">new game</a>
+      </div>
+      <div id="score">
+        <span style="margin-left: -17px">score</span>
+        <h2 id="foodcount">
+          0
+        </h2>
+      </div>
+      <div id="para"></div>
+    </div>
+    <!-- Load script tags last except for rare cases. -->
+    <script type="text/javascript" src="script.js"></script>
+  </body>
 </html>

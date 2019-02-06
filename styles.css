@@ -1,118 +1,104 @@
-
-
-#parent{
-    width: 600px;
-    height: 600px;
-    position: relative;
+#parent {
+  width: 600px;
+  height: 600px;
+  position: relative;
 }
 
-#container1{
-    width: 500px;
-    height: 500px;
-    background: yellow;
-    margin: 8px;     
-    left: 0px;
-    top: 0px;
+#container1 {
+  width: 500px;
+  height: 500px;
+  background: yellow;
+  margin: 8px;
+  left: 0px;
+  top: 0px;
 }
 
-.selectedhead{
-    background-color: blue;
+h2#foodcount {
+  margin: auto;
+  font-size: 30px;
+  margin-left: -12px;
+  margin-top: 0px;
+}
+.selectedhead {
+  background-color: blue;
 }
 
-.selectedbody{
-    background-color:   red;
+.selectedbody {
+  background-color: red;
 }
 
 td {
-    width: 10px;
-    height: 10px;
+  width: 10px;
+  height: 10px;
 }
 
-.selectedfood{
-    background-color:   green;
+.selectedfood {
+  background-color: green;
 }
 
-#startGame{
-width: 500px;
-height: 500px;
-margin: 16px;
-position: absolute;
-left: -8px;
-top: -15px;
-background-color: yellow;
-font-size: 40px;
-text-align: center;
-font-weight: bold;
+#startGame {
+  width: 500px;
+  height: 500px;
+  margin: 16px;
+  position: absolute;
+  left: -8px;
+  top: -15px;
+  background-color: yellow;
+  font-size: 40px;
+  text-align: center;
+  font-weight: bold;
 }
 
-#endGame{
-width: 500px;
-height: 500px;
-margin: 16px;
-position: absolute;
-left: -8px;
-top: -15px;
-background-color: yellow;
-font-size: 40px;
-text-align: center;
-font-weight: bold;
-display: none;
+#endGame {
+  width: 500px;
+  height: 500px;
+  margin: 16px;
+  position: absolute;
+  left: -8px;
+  top: -15px;
+  background-color: yellow;
+  font-size: 40px;
+  text-align: center;
+  font-weight: bold;
+  display: none;
 }
 
-#startGame h2, #endGame h2{
-margin-bottom: 40px;
-margin-top: 190px;
-    margin-left: auto;
-    margin-right: auto;
+#startGame h2,
+#endGame h2 {
+  margin-bottom: 40px;
+  margin-top: 190px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-#startGame a, #endGame a{
-    font-size: 30px;
+#startGame a,
+#endGame a {
+  font-size: 30px;
 }
 
-#startGame a:hover, #endGame a:hover{
-    cursor: pointer;
+#startGame a:hover,
+#endGame a:hover {
+  cursor: pointer;
 }
 
-#startGame a:hover::before, #endGame a:hover::before{
-content: ">";
-margin-right: 10px;
- }
-
-#score{
-    width: 20px;
-    height: 20px;
-    position: absolute;
-    top: 0px;
-    right: 50px;
-    font-size: 30px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+#startGame a:hover::before,
+#endGame a:hover::before {
+  content: ">";
+  margin-right: 10px;
 }
 
-
-.highlight{
-
-
-    background-color: blue;
-
-
-
+#score {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: 0px;
+  right: 50px;
+  font-size: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-
-
-
-
-/* span{
-
-
-
-    font-size: 20px;
-
-
-
-
-
-} */
+.highlight {
+  background-color: blue;
+}
