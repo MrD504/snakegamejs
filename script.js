@@ -6,6 +6,7 @@ window.onload = function() {
   const endDiv = document.getElementById("endGame");
   const endnewGamePress = document.getElementById("newgamestart");
   const foodcounter = document.getElementById("foodcount");
+  const container1 = document.getElementById("container1");
 
   const Rows = 20;
   const Columns = 20;
@@ -18,8 +19,6 @@ window.onload = function() {
   let y = display(); //once two dimensional array is created it is converted to table
   document.getElementById("container1").appendChild(y); //y is table that is attached to container1 div element
   document.addEventListener("keydown", keyPressed); //added eventlistener
-
-  resetSnake();
 
   function CoordConstructor() {
     this.x = 0;
@@ -49,21 +48,20 @@ window.onload = function() {
 
   newGamePress.onclick = function(event) {
     event.preventDefault();
-    beginNewGame();
+    newGame();
   };
 
   endnewGamePress.onclick = function(event) {
     event.preventDefault();
-    beginNewGame();
+    newGame();
   };
 
-  /* duplication */
-  function beginNewGame() {
+  function newGame() {
+    resetSnake(); // initialise snake
+    foodposition(); //this random position of food is generated with this method
     createBoard();
-    startDiv.style.display = "none";
-    console.log("clicked");
-    endDiv.style.display = "none";
-    resetSnake();
+    startDiv.style.display = "none"; // hide startdiv on game start
+    endDiv.style.display = "none"; // hide enddiv on game start
     container = new CoordConstructor();
     X = 0;
     Y = 0;
@@ -71,16 +69,15 @@ window.onload = function() {
     foodcounter.innerHTML = count;
 
     foodposition(); //this random position of food is generated with this method
-    formgrid("", Rows, Columns); //this creating two dimensional array with 20 Rows and 20 Columns filling with blank
     grid[container.x][container.y] = snake.body[0]; //position of snake head
     grid[foodLocation.x][foodLocation.y] = "F"; //position of food F
     console.log(grid);
 
     let t = display();
     let firstchild1 = document.getElementById("container1").firstChild;
-    let container1 = document.getElementById("container1");
     container1.replaceChild(t, firstchild1);
 
+    /* Do not start timer until player is ready to play */
     startTimer();
   }
 
@@ -116,6 +113,7 @@ window.onload = function() {
   }
 
   function formgrid(d, c, r) {
+    console.log(`d: ${d}, c: ${c}, r: ${r}`);
     grid = []; //step1:  create array
 
     for (let x = 0; x < c; x++) {
@@ -217,17 +215,18 @@ window.onload = function() {
         }
 
         let t = display();
-        let firstchild1 = document.getElementById("container1").firstChild;
-        let container1 = document.getElementById("container1");
+        let firstchild1 = container1.firstChild;
         container1.replaceChild(t, firstchild1);
         foodEaten = false;
         return;
       }
 
       //here movement of head and body gets updated
-      formgrid("", 20, 20);
+      formgrid("", Rows, Columns);
+      console.log("grid", grid);
       grid[container.x][container.y] = snake.body[0];
       grid[foodLocation.x][foodLocation.y] = "F";
+
       for (let prev = 0; prev < snake.length; prev++) {
         // grid[position[prev].x][position[prev].y] = "o";
         let tempx = snake.position[prev].x; //next position for next index element
@@ -241,8 +240,7 @@ window.onload = function() {
       }
 
       let t = display();
-      let firstchild1 = document.getElementById("container1").firstChild;
-      let container1 = document.getElementById("container1");
+      let firstchild1 = container1.firstChild;
       container1.replaceChild(t, firstchild1);
     } else {
       container.x += X;
@@ -250,17 +248,15 @@ window.onload = function() {
       console.log("I am working");
       console.log("snake y", container.y);
       formgrid("", Rows, Columns); //only when head part is there
+
       //formgrid means form two dimensional array with 20 Rows and 20 Columns and fill the cell with ""
       grid[container.x][container.y] = snake.body[0];
-      //console.log("grid", grid);
       grid[foodLocation.x][foodLocation.y] = "F";
       let t = display(); //new position of player
-      let firstchild1 = document.getElementById("container1").firstChild; //previous position of player
-      let container1 = document.getElementById("container1");
+      let firstchild1 = container1.firstChild; //previous position of player
       container1.replaceChild(t, firstchild1); //previous position replaced with new - ok
     }
 
-    //if (grid[container.x][container.y] == grid[foodLocation.x][foodLocation.y])
     if (container.x === foodLocation.x && container.y === foodLocation.y) {
       let nextx = container.x; //food position and snake head position same
       let nexty = container.y; //food position and snake head position same
@@ -276,29 +272,12 @@ window.onload = function() {
       snake.body.push("o"); //we push small o that is the body part
       snake.length++; //increase the length by one
 
-      //grid[nextx][nexty] = 'o';
       snake.position.unshift({ x: nextx, y: nexty }); //saved food position is moved to first position of position array
-
-      // grid[container.x][container.y] = player[0];
-
-      //grid[position[0].x][position[0].y] = 'o';
-
-      // let t = display();
-      // let firstchild1 = document.getElementById('container1').firstChild;
-      // let container1 = document.getElementById('container1');
-      // container1.replaceChild(t, firstchild1);
 
       console.log("position", snake.position);
       console.log("palyer", snake.body);
       console.log("grid after loop", grid);
     }
-    // formgrid("", Rows, Columns);//this creating two dimensional array with 20 Rows and 20 Columns filling with blank
-    // grid[container.x][container.y] = player[0]; //position of snake head
-    // grid[foodLocation.x][foodLocation.y] = "F"; //position of food F
-    // let t = display();
-    // let firstchild1 = document.getElementById('container1').firstChild;
-    // let container1 = document.getElementById('container1');
-    // container1.replaceChild(t, firstchild1);
   }
 
   function keyPressed(evt) {
@@ -347,13 +326,7 @@ window.onload = function() {
   function createBoard() {
     //this creating two dimensional array with 20 Rows and 20 Columns filling with blank
     formgrid("", Rows, Columns);
+    grid[container.x][container.y] = snake.body[0]; //position of snake head
+    grid[foodLocation.x][foodLocation.y] = "F"; //position of food F
   }
-  //   foodposition(); //this random position of food is generated with this method
-  //   grid[container.x][container.y] = snake.body[0]; //position of snake head
-  //   grid[foodLocation.x][foodLocation.y] = "F"; //position of food F
-  //   console.log(grid);
-  //
-  //   startTimer();
-
-  //let x = grid;
 };
